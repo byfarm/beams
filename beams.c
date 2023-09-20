@@ -104,21 +104,25 @@ void solve_reactions(point_force support_reactions[],int num_supports, float len
 	// sum the point forces
 	float Fnetm = 0;
 	float Fnet = 0;
+
+	// must do this because when solving for reactions need to cancel out 1 unknown
+	float loc_offset = support_reactions[0].location;
+
 	for (int i = 0; i < num_forces; i++) {
-		Fnetm += force_array[i].location * force_array[i].magnitude;
+		Fnetm += (force_array[i].location - loc_offset) * force_array[i].magnitude;
 		Fnet += force_array[i].magnitude;
 	}
 
 	// find the sum of the dloads
 	for (int i = 0; i < num_dloads; i++) {
-		Fnetm += (d_loads[i].stop - d_loads[i].start) * d_loads[i].pressure * (d_loads[i].start + d_loads[i].stop) / 2;
+		Fnetm += (d_loads[i].stop - d_loads[i].start) * d_loads[i].pressure * ((d_loads[i].start + d_loads[i].stop) / 2 - loc_offset);
 		Fnet += (d_loads[i].stop - d_loads[i].start) * d_loads[i].pressure;
 	}
 
-	// solve for the reactions
-	float reactionB = Fnetm / length;
+	// solve for the reactions using sum of moments then sum forces in y
+	float reactionB = (Fnetm) / (support_reactions[1].location - support_reactions[0].location);
 	for (int i = 0; i < num_moments; i++) {
-		reactionB += moments[i].magnitude / length;
+		reactionB += moments[i].magnitude / (support_reactions[1].location - support_reactions[0].location);
 	}
 	float reactionA = Fnet - reactionB;
 
@@ -138,10 +142,11 @@ float* linspace(float start, float stop, int len) {
 }
 
 void write_csv(float *x, float* M, float* S, int num) {
+	// write data to the csv file to be graphed by the python script
 	FILE *file;
 	file = fopen("data.csv", "w");
 	if (file == NULL) {
-		printf("Error opening file/n");
+		printf("Error opening file\n");
 	}
 	fprintf(file, "%i,%i,%i", 1, 2, 3);
 	for (int i = 0; i < num; i++) {
@@ -159,18 +164,18 @@ int main() {
 
 	// length of beam
 	float length = 10;
-	// number of supports
-	float sup_loc[] = {0, length};
+	// location of the supports
+	float sup_loc[] = {4, 10};
 	// point forces
-	float force[] = {};
-	float location[] = {};
+	float force[] = {6};
+	float location[] = {6};
 	// destributed loads
-	float pressure[] = {};
-	float starts[] = {};
-	float stops[] = {};
+	float pressure[] = {2};
+	float starts[] = {0};
+	float stops[] = {9};
 	// moments
-	float M[] = { 10 };
-	float position[] = { 5 };
+	float M[] = {8};
+	float position[] = {2};
 	
 	// solve the reactions
 	int num_supports = sizeof(sup_loc)/ sizeof(sup_loc[0]);
@@ -234,8 +239,10 @@ int main() {
 	for (int i = 0; i < points; i++) {
 		all_shear[i] = solve_shear_d(support_reactions, pf_array, d_load_array, *x, num_supports, num_point_forces, num_dest_loads);
 		all_M[i] = solve_moment_d(support_reactions, pf_array, d_load_array, M_array, *x, num_supports, num_point_forces, num_dest_loads, num_moments);
+		// printf("%.2f %.2f %.2f\n", *x, all_shear[i], all_M[i]);
 		x++;
 	}
+	// have to reset x pointer back to begining
 	for (int i = 0; i < points; i++) {
 		x--;
 	}
@@ -243,4 +250,3 @@ int main() {
 
 	return 0;
 }
-

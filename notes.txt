@@ -1,0 +1,1 @@
+need to fix the solve reaction function for when either support is not at the end of the beam
