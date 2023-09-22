@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_LINE_LENGTH 50
+#define MAX_LINE_LENGTH 64
 
 typedef struct point_force {
 	float location;
@@ -12,7 +12,12 @@ typedef struct point_force {
 typedef struct dest_load {
 	float start;
 	float stop;
+    // this is the pressure at start
 	float pressure;
+	int factor;
+    // this is the pressure at stop
+	float pressure2;
+	float slope;
 } dest_load;
 
 typedef struct moment {
@@ -94,70 +99,73 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float
 
 	if (line[0] == 'P') {
 
-	    point_force *pf = (point_force*) malloc(sizeof(point_force));
+	    point_force pf; // = (point_force*) malloc(sizeof(point_force));
 	    char *token;
 	    token = strtok(data, ",");
-	    pf->location = atof(token);
+	    pf.location = atof(token);
 	    while (token != NULL) {
-		pf->magnitude = atof(token);
+		pf.magnitude = atof(token);
 		token = strtok(NULL, ",");
 	    }
 
 	    // printf("pf mag %f\n", pf->magnitude);
 	    // printf("pf loc %f\n", pf->location);
-	    P[pi] = *pf;
+	    P[pi] = pf;
 	    pi++;
-	    free(pf);
+	    // free(pf);
 
 	} else if (line[0] == 'R') {
 
 	    char *token;
-	    point_force *pf = (point_force*) malloc(sizeof(point_force));
-	    point_force *pf2 = (point_force*) malloc(sizeof(point_force));
+	    point_force pf; // = (point_force*) malloc(sizeof(point_force));
+	    point_force pf2;//  = (point_force*) malloc(sizeof(point_force));
 	    token = strtok(data, ";");
-	    pf->location = atof(token);
+	    pf.location = atof(token);
 	    while (token != NULL) {
-		pf2->location = atof(token);
+		pf2.location = atof(token);
 		token = strtok(NULL, ";");
 	    }
 	    // printf("reaction loc %f\n", pf->location);
 	    // printf("reaction2 loc %f\n", pf2->location);
-	    R[ri] = *pf;
+	    R[ri] = pf;
 	    ri++;
-	    R[ri] = *pf2;
+	    R[ri] = pf2;
 	    ri++;
-	    free(pf), free(pf2);
+	    // free(pf), free(pf2);
 
 	} else if (line[0] == 'D') {
 
-	    char start[MAX_LINE_LENGTH];
+	    /* char start[MAX_LINE_LENGTH];
 	    char stop[MAX_LINE_LENGTH];
 	    char magnitude[MAX_LINE_LENGTH];
-	    int i = 0;
-	    while (data[i] != ':') {
-		start[i] = data[i];
-		i++;
-	    }
-	    i++;
-	    int diff = i;
-	    while (data[i] != ',') {
-		stop[i - diff] = data[i];
-		i++;
-	    }
-	    i++;
-	    int idx = i;
-	    while (data[i] != '\n') {
-		magnitude[i - idx] = data[i];
-		i++;
-	    }
-	    dest_load *dload = (dest_load*) malloc(sizeof(dest_load));
-	    dload->start = atof(start);
-	    dload->stop = atof(stop);
-	    dload->pressure = atof(magnitude);
-	    // printf("dload pressure %f\n", dload->pressure);
-	    D[di] = *dload;
+	    char factor[MAX_LINE_LENGTH]; */
+
+	    char *token;
+	    token = strtok(data, ",");
+	    char *len_data = token;
+	    token = strtok(NULL, ",");
+	    char *pressure_data = token;
+	    token = strtok(NULL, ",");
+	    int factor = atoi(token);
+	    printf("d data: %s %s %i\n", len_data, pressure_data, factor);
+	    dest_load dload; // = (dest_load*) malloc(sizeof(dest_load));
+
+	    char *ststop;
+	    ststop = strtok(len_data, ":");
+	    dload.start = atof(ststop);
+	    ststop = strtok(NULL, ":");
+	    dload.stop = atof(ststop);
+
+	    char *pd;
+	    pd = strtok(pressure_data, ":");
+	    dload.pressure = atof(pd);
+	    pd = strtok(NULL, ":");
+	    dload.pressure2 = atof(pd);
+
+	    dload.factor = factor;
+
+	    D[di] = dload;
 	    di++;
-	    free(dload);
 
 	} else if (line[0] == 'M') {
 
@@ -174,14 +182,14 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float
 		magnitude[i - idx] = data[i];
 		i++;
 	    }
-	    moment *mom = (moment*) malloc(sizeof(moment));
-	    mom->location = atof(location);
-	    mom->magnitude = atof(magnitude);
-	    M[mi] = *mom;
+	    moment mom; // = (moment*) malloc(sizeof(moment));
+	    mom.location = atof(location);
+	    mom.magnitude = atof(magnitude);
+	    M[mi] = mom;
 	    // printf("moment mag %f\n", mom->magnitude);
 	    // printf("moment loc %f\n", mom->location);
 	    mi++;
-	    free(mom);
+	    // free(mom);
 
 	} else if (line[0] == 'L') {
 
@@ -194,4 +202,4 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float
     }
     fclose(file);
     printf("Data loaded\n");
-}
+};
