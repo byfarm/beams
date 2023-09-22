@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAX_LINE_LENGTH 50
 
@@ -49,22 +50,29 @@ void get_nums(int array[]) {
 
     while (fgets(line, MAX_LINE_LENGTH, file)) {
 	if (line[0] == 'R') {
-	    array[0] += 1;
+	    char *token;
+	    token = strtok(line, ";");
+	    while (token != NULL) {
+		array[0] += 1;
+		token = strtok(NULL, ";");
+	    }
+	    array[0]--;
 	} else if (line[0] == 'P') {
 	    array[1] += 1;
 	} else if (line[0] == 'D') {
 	    array[2] += 1;
 	} else if (line[0] == 'M') {
 	    array[3] += 1;
+	} else if (line[0] == 'L') {
 	} else {
 	    printf("invalid input\n");
 	}
     }
     fclose(file);
-    printf("lengths_read\n");
+    printf("Lengths read\n");
 }
 
-void read_txt(point_force R[], point_force P[], dest_load D[], moment M[]) {
+void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float *length) {
 
     FILE *file;
     char line[MAX_LINE_LENGTH];
@@ -81,55 +89,44 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[]) {
     while (fgets(line, MAX_LINE_LENGTH, file)) {
         printf("%s", line);
 
-	char data[MAX_LINE_LENGTH - 2];
+	char *data;
+	data = line + 2;
 
-	for (int i = 2; line[i] != '\n'; i++) {
-	    data[i - 2] = line[i];
-	}
 	if (line[0] == 'P') {
 
-	    char location[MAX_LINE_LENGTH];
-	    char magnitude[MAX_LINE_LENGTH];
-	    int i = 0;
-	    while (data[i] != ',') {
-		location[i] = data[i];
-		i++;
-	    }
-	    i++;
-	    int idx = i;
-	    while (data[i] != '\n') {
-		magnitude[i - idx] = data[i];
-		i++;
-	    }
 	    point_force *pf = (point_force*) malloc(sizeof(point_force));
-	    pf->location = atof(location);
-	    pf->magnitude = atof(magnitude);
+	    char *token;
+	    token = strtok(data, ",");
+	    pf->location = atof(token);
+	    while (token != NULL) {
+		pf->magnitude = atof(token);
+		token = strtok(NULL, ",");
+	    }
+
+	    // printf("pf mag %f\n", pf->magnitude);
+	    // printf("pf loc %f\n", pf->location);
 	    P[pi] = *pf;
 	    pi++;
+	    free(pf);
 
 	} else if (line[0] == 'R') {
 
-	    char location[MAX_LINE_LENGTH];
-	    char location2[MAX_LINE_LENGTH];
-	    int i = 0;
-	    while (data[i] != ';') {
-		location[i] = data[i];
-		i++;
-	    }
-	    i++;
-	    int idx = i;
-	    while (data[i] != '\n') {
-		location2[i - idx] = data[i];
-		i++;
-	    }
+	    char *token;
 	    point_force *pf = (point_force*) malloc(sizeof(point_force));
 	    point_force *pf2 = (point_force*) malloc(sizeof(point_force));
-	    pf->location = atof(location);
-	    pf2->location = atof(location2);
+	    token = strtok(data, ";");
+	    pf->location = atof(token);
+	    while (token != NULL) {
+		pf2->location = atof(token);
+		token = strtok(NULL, ";");
+	    }
+	    // printf("reaction loc %f\n", pf->location);
+	    // printf("reaction2 loc %f\n", pf2->location);
 	    R[ri] = *pf;
 	    ri++;
 	    R[ri] = *pf2;
 	    ri++;
+	    free(pf), free(pf2);
 
 	} else if (line[0] == 'D') {
 
@@ -157,8 +154,10 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[]) {
 	    dload->start = atof(start);
 	    dload->stop = atof(stop);
 	    dload->pressure = atof(magnitude);
+	    // printf("dload pressure %f\n", dload->pressure);
 	    D[di] = *dload;
 	    di++;
+	    free(dload);
 
 	} else if (line[0] == 'M') {
 
@@ -179,7 +178,15 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[]) {
 	    mom->location = atof(location);
 	    mom->magnitude = atof(magnitude);
 	    M[mi] = *mom;
+	    // printf("moment mag %f\n", mom->magnitude);
+	    // printf("moment loc %f\n", mom->location);
 	    mi++;
+	    free(mom);
+
+	} else if (line[0] == 'L') {
+
+	    *length = atof(data);
+	    // printf("len %f\n", *length);
 
 	} else {
 	    printf("Invalid Input");
