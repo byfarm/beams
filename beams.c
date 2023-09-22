@@ -1,22 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
-typedef struct point_force {
-	float location;
-	float magnitude;
-} point_force;
-
-typedef struct dest_load {
-	float start;
-	float stop;
-	float pressure;
-} dest_load;
-
-typedef struct moment {
-	float location;
-	float magnitude;
-} moment;
+#include "fileio.h"
 
 float solve_shear_d(point_force support_reactions[], point_force pf_array[], dest_load d_load_array[], float x, int num_supp, int num_pf, int num_dloads) {
 	// solves the shear diagram
@@ -141,89 +126,83 @@ float* linspace(float start, float stop, int len) {
 	return array;
 }
 
-void write_csv(float *x, float* M, float* S, int num) {
-	// write data to the csv file to be graphed by the python script
-	FILE *file;
-	file = fopen("data.csv", "w");
-	if (file == NULL) {
-		printf("Error opening file\n");
-	}
-	fprintf(file, "%i,%i,%i", 1, 2, 3);
-	for (int i = 0; i < num; i++) {
-		fprintf(file, "%0.2f,%0.2f,%0.2f\n", *x, *S, *M);
-		if (ferror(file)) {printf("error printing to file");}
-		x++;
-		M++;
-		S++;
-	}
-	fclose(file);
-}
-
 int main() {
+	int length = 10;
+	int indexes[4] = {0};
+	get_nums(indexes);
+	int num_supports = indexes[0]; 
+	int num_point_forces = indexes[1];
+	int num_dest_loads = indexes[2];
+	int num_moments = indexes[3];
+	point_force support_reactions[num_supports];
+	point_force pf_array[num_point_forces];
+	dest_load d_load_array[num_dest_loads];
+	moment M_array[num_moments];
+	read_txt(support_reactions, pf_array, d_load_array, M_array);
 	// all units are in lbs/ft
 
-	// length of beam
-	float length = 10;
-	// location of the supports
-	float sup_loc[] = {4, 10};
-	// point forces
-	float force[] = {6};
-	float location[] = {6};
-	// destributed loads
-	float pressure[] = {2};
-	float starts[] = {0};
-	float stops[] = {9};
-	// moments
-	float M[] = {8};
-	float position[] = {2};
-	
-	// solve the reactions
-	int num_supports = sizeof(sup_loc)/ sizeof(sup_loc[0]);
-	point_force support_reactions[num_supports];
-	for (int i = 0; i < num_supports; i++) {
-		support_reactions[i].location = sup_loc[i];
-		if (sup_loc[i] < 0 || sup_loc[i] > length) {
-			printf("force is off the beam");
-			return 1;
-		}
-	}
-
-	// put point forces into structure
-	int num_point_forces = sizeof(force)/ sizeof(force[0]);
-	point_force pf_array[num_point_forces];
-	for (int i = 0; i < num_point_forces; i++) {
-		pf_array[i].location = location[i];
-		pf_array[i].magnitude = force[i];
-		if (location[i] < 0 || location[i] > length) {
-			printf("force is off the beam");
-			return 1;
-		}
-	}
-
-	// put destributed loads into structure
-	int num_dest_loads = sizeof(pressure)/ sizeof(pressure[0]);
-	dest_load d_load_array[num_dest_loads];
-	for (int i = 0; i < num_dest_loads; i++) {
-		d_load_array[i].pressure = pressure[i];
-		d_load_array[i].start = starts[i];
-		d_load_array[i].stop = stops[i];
-		if (starts[i] < 0 || stops[i] > length || starts[i] > stops[i]) {
-			printf("destributed load is off the beam");
-			return 1;
-		}
-	}
-
-	// put moments into structure
-	int num_moments = sizeof(M)/ sizeof(M[0]);
-	moment M_array[num_moments];
-	for (int i = 0; i < num_moments; i++) {
-		M_array[i].location = position[i];
-		M_array[i].magnitude = M[i];
-		if (location[i] < 0 || location[i] > length) {
-			printf("force is off the beam");
-			return 1;
-		}
-	}
+	// // length of beam
+	// float length = 10;
+	// // location of the supports
+	// float sup_loc[] = {4, 10};
+	// // point forces
+	// float force[] = {6};
+	// float location[] = {6};
+	// // destributed loads
+	// float pressure[] = {2};
+	// float starts[] = {0};
+	// float stops[] = {9};
+	// // moments
+	// float M[] = {8};
+	// float position[] = {2};
+	// 
+	// // solve the reactions
+	// int num_supports = sizeof(sup_loc)/ sizeof(sup_loc[0]);
+	// point_force support_reactions[num_supports];
+	// for (int i = 0; i < num_supports; i++) {
+	// 	support_reactions[i].location = sup_loc[i];
+	// 	if (sup_loc[i] < 0 || sup_loc[i] > length) {
+	// 		printf("force is off the beam");
+	// 		return 1;
+	// 	}
+	// }
+	//
+	// // put point forces into structure
+	// int num_point_forces = sizeof(force)/ sizeof(force[0]);
+	// point_force pf_array[num_point_forces];
+	// for (int i = 0; i < num_point_forces; i++) {
+	// 	pf_array[i].location = location[i];
+	// 	pf_array[i].magnitude = force[i];
+	// 	if (location[i] < 0 || location[i] > length) {
+	// 		printf("force is off the beam");
+	// 		return 1;
+	// 	}
+	// }
+	//
+	// // put destributed loads into structure
+	// int num_dest_loads = sizeof(pressure)/ sizeof(pressure[0]);
+	// dest_load d_load_array[num_dest_loads];
+	// for (int i = 0; i < num_dest_loads; i++) {
+	// 	d_load_array[i].pressure = pressure[i];
+	// 	d_load_array[i].start = starts[i];
+	// 	d_load_array[i].stop = stops[i];
+	// 	if (starts[i] < 0 || stops[i] > length || starts[i] > stops[i]) {
+	// 		printf("destributed load is off the beam");
+	// 		return 1;
+	// 	}
+	// }
+	//
+	// // put moments into structure
+	// int num_moments = sizeof(M)/ sizeof(M[0]);
+	// moment M_array[num_moments];
+	// for (int i = 0; i < num_moments; i++) {
+	// 	M_array[i].location = position[i];
+	// 	M_array[i].magnitude = M[i];
+	// 	if (location[i] < 0 || location[i] > length) {
+	// 		printf("force is off the beam");
+	// 		return 1;
+	// 	}
+	// }
 
 	// get reactions at 2 supports
 	solve_reactions(support_reactions, num_supports, length, pf_array, num_point_forces, d_load_array, num_dest_loads, M_array, num_moments);
