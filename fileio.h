@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "calc.h"
 
 #define MAX_LINE_LENGTH 64
 
@@ -17,7 +18,8 @@ typedef struct dest_load {
 	int factor;
     // this is the pressure at stop
 	float pressure2;
-	float slope;
+	float center;
+	float weightf;
 } dest_load;
 
 typedef struct moment {
@@ -135,11 +137,6 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float
 
 	} else if (line[0] == 'D') {
 
-	    /* char start[MAX_LINE_LENGTH];
-	    char stop[MAX_LINE_LENGTH];
-	    char magnitude[MAX_LINE_LENGTH];
-	    char factor[MAX_LINE_LENGTH]; */
-
 	    char *token;
 	    token = strtok(data, ",");
 	    char *len_data = token;
@@ -147,7 +144,7 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float
 	    char *pressure_data = token;
 	    token = strtok(NULL, ",");
 	    int factor = atoi(token);
-	    printf("d data: %s %s %i\n", len_data, pressure_data, factor);
+	    // printf("d data: %s %s %i\n", len_data, pressure_data, factor);
 	    dest_load dload; // = (dest_load*) malloc(sizeof(dest_load));
 
 	    char *ststop;
@@ -163,6 +160,8 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float
 	    dload.pressure2 = atof(pd);
 
 	    dload.factor = factor;
+	    dload.weightf = weight(dload.start, dload.stop, dload.factor, dload.pressure, dload.pressure2);
+	    dload.center = position(dload.start, dload.stop, dload.factor, dload.pressure, dload.pressure2);
 
 	    D[di] = dload;
 	    di++;
@@ -197,7 +196,7 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float
 	    // printf("len %f\n", *length);
 
 	} else {
-	    printf("Invalid Input");
+	    printf("Invalid Input\n");
 	}
     }
     fclose(file);

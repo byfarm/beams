@@ -99,8 +99,8 @@ void solve_reactions(point_force support_reactions[],int num_supports, float len
 
 	// find the sum of the dloads
 	for (int i = 0; i < num_dloads; i++) {
-		Fnetm += (d_loads[i].stop - d_loads[i].start) * d_loads[i].pressure * ((d_loads[i].start + d_loads[i].stop) / 2 - loc_offset);
-		Fnet += (d_loads[i].stop - d_loads[i].start) * d_loads[i].pressure;
+		Fnetm += d_loads[i].weightf * (d_loads[i].center - loc_offset);
+		Fnet += d_loads[i].weightf;
 	}
 
 	// solve for the reactions using sum of moments then sum forces in y
