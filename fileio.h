@@ -20,6 +20,7 @@ typedef struct dest_load {
 	float pressure2;
 	float center;
 	float weightf;
+	float slope;
 } dest_load;
 
 typedef struct moment {
@@ -160,7 +161,8 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float
 	    dload.pressure2 = atof(pd);
 
 	    dload.factor = factor;
-	    dload.weightf = weight(dload.start, dload.stop, dload.factor, dload.pressure, dload.pressure2);
+	    dload.slope = (dload.pressure2 - dload.pressure) / (dload.stop - dload.start);
+	    dload.weightf = weight(dload.start, dload.stop, dload.factor, dload.pressure, dload.slope);
 	    dload.center = position(dload.start, dload.stop, dload.factor, dload.pressure, dload.pressure2);
 
 	    D[di] = dload;
