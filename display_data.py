@@ -14,7 +14,7 @@ min_m = min(M)
 print(f"Max Shear: {max_s} lb/ft^2")
 print(f"Min Shear: {min_s} lb/ft^2")
 print(f"Max Moment: {max_m} lb/ft^2")
-print(f"Min Moment: {min_s} lb/ft^2")
+print(f"Min Moment: {min_m} lb/ft^2")
 max_s = max(abs(S)) * 1.1
 max_m = max(abs(M)) * 1.1
 

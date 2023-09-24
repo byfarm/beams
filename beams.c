@@ -35,7 +35,7 @@ float solve_shear_d(point_force support_reactions[], point_force pf_array[], des
 
 	// sum all
 	float shear = dload + pf - supports;
-	return shear;
+	return -shear;
 }
 
 
@@ -79,7 +79,7 @@ float solve_moment_d(point_force support_reactions[], point_force pf_array[], de
 
 	// sum all
 	float moment = dload + pf + M - supports;
-	return moment;
+	return -moment;
 }
 
 
