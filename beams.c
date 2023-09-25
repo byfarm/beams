@@ -27,7 +27,7 @@ float solve_shear_d(point_force support_reactions[], point_force pf_array[], des
 	// sum the destributed load forces
 	for (int i = 0; i < num_dloads; i++) {
 		if (x >= d_load_array[i].start && x <= d_load_array[i].stop) {
-			float dweight = weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].slope);
+			float dweight = weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope);
 			dload += dweight;
 		} else if (x > d_load_array[i].stop) {
 			dload += d_load_array[i].weightf;
@@ -65,13 +65,14 @@ float solve_moment_d(point_force support_reactions[], point_force pf_array[], de
 	// sum the moment of the destributed loads
 	for (int i = 0; i < num_dloads; i++) {
 		if (x >= d_load_array[i].start && x <= d_load_array[i].stop) {
-			float n_w = weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].slope) * (x - position(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2));
+			float n_w = weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope) * (x - position(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2));
+			printf("diff: %f\n", (x - position(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2)));
+			printf("weight: %f\n", weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope));
 			printf("x: %.2f\n", x);
-			printf("ndload: %.2f\n", n_w);
+			// printf("ndload: %.2f\n", n_w);
 			dload += n_w;
 		} else if (x > d_load_array[i].stop) {
 			float n_w = d_load_array[i].weightf * (x - d_load_array[i].center);
-			float j = d_load_array[i].pressure * (d_load_array[i].stop - d_load_array[i].start) * (x - ((d_load_array[i].stop + d_load_array[i].start)/2));
 			dload += n_w;
 		}
 	}

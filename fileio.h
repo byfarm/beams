@@ -162,8 +162,10 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float
 
 	    dload.factor = factor;
 	    dload.slope = (dload.pressure2 - dload.pressure) / (dload.stop - dload.start);
-	    dload.weightf = weight(dload.start, dload.stop, dload.factor, dload.pressure, dload.slope);
+	    dload.weightf = weight(dload.start, dload.stop, dload.factor, dload.pressure, dload.pressure2, dload.slope);
 	    dload.center = position(dload.start, dload.stop, dload.factor, dload.pressure, dload.pressure2);
+	    // printf("center: %f\n", dload.center);
+	    // printf("weight: %f\n", dload.weightf);
 
 	    D[di] = dload;
 	    di++;
