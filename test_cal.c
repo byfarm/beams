@@ -3,12 +3,13 @@
 #include "calc.h"
 
 int main() {
-	float start = 3;
-	float stop = 8;
-	float power = 2;
-	float p1 = 2;
-	float p2 = 3;
-	float weightf = weight(start, stop, power, p1, p2);
+	float start = 0;
+	float stop = 10;
+	float power = 1;
+	float p1 = 4;
+	float p2 = 2;
+	float slope = (p2 - p1) / (stop - start);
+	float weightf = weight(start, stop, power, p1, p2, slope);
 	printf("%f\n", weightf);
 	return 0;
 }
