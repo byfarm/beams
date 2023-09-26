@@ -220,7 +220,7 @@ int main() {
 	printf("Reaction A: %0.2f lbs\nReaction B: %0.2f lbs\n", support_reactions[0].magnitude, support_reactions[1].magnitude);
 
 	// make plot points
-	int points = 9;
+	int points = 900;
 	float *x = linspace(0, length, points);
 	float all_shear[points];
 	float all_M[points];

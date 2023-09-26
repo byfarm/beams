@@ -61,28 +61,26 @@ float position(float x1, float x2, float factor, float y1, float y2, float slope
     float fraction = (x2 - x1) / (factor + 2);
     // printf("%f\n", factor+2);
     float base_frac = (x2 - x1) / 2;
-    float a1 = weight(x1, x2, factor, y1, y2, -0.9, 1);
-    float a1x = weight(x1, x2, factor+1, y1, y2, -0.9, 1);
-    float xbar = a1x/a1;
-    printf("xbar: %.2f\n", xbar);
     // printf("x1: %0.2f, x2: %.2f\n", x1, x2);
     // printf("fraction: %.2f\n", fraction);
     float position;
-    
     if (y1 < y2) {
+	printf("x1: %.2f, x2: %.2f, y1: %.2f, y2: %.2f\n", x1, x2, y1, y2);
+	float a1 = weight(x1, x2, factor, y1, y2, slope, 1);
 	float a2 = (x2 - x1) * y1;
-	fraction = x2 - fraction;
-	position = (fraction * a1 + base_frac * a2) / (a1 + a2);
+	position = x2 - fraction;
+	// position = (fraction * a1 + base_frac * a2) / (a1 + a2);
     } else if (y1 > y2) {
-	a1 = weight(x1, x2, factor, y1-y2, 0, slope, 1);
-	x1 = pow((y1-y2)/-slope, 1/factor);
-	x2 = x1 - x2;
-	float low_y = -slope * pow(x2, factor) + y2;
+	// fraction = x1 + fraction;
+	float tx1 = pow((y1-y2)/-slope, 1/factor);
+	float tx2 = tx1 - x2;
+	float low_y = -slope * pow(tx2, factor) + y2;
+	float a1 = weight(x1, x2, factor, y1-low_y, 0,  slope, 1);
 	printf("lowy %f\n", low_y);
-	float a2 = (x1 - x2) * low_y;
+	float a2 = (tx1 - tx2) * low_y;
 	printf("x1: %.2f, x2: %.2f, y1: %.2f, y2: %.2f\n", x1, x2, y1, y2);
 	printf("a1: %f a2: %f\n", a1, a2);
-	// fraction = x1 + fraction;
+	printf("sum A %f\n", a1+a2);
 	position = (fraction * a1 + base_frac * a2) / (a1 + a2);
     } else {
 	position = (x1 + x2) / 2;

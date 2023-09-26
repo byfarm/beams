@@ -4,11 +4,16 @@ import pandas as pd
 
 data = pd.read_csv("data.csv")
 x = list(data.iloc[:, 0])
-S = data.iloc[:, 1]
-M = data.iloc[:, 2]
+S = (data.iloc[:, 1])
+M = (data.iloc[:, 2])
+
+Ss = list(S)
+Mm = list(M)
 
 max_s = max(S)
 max_m = max(M)
+idx = Mm.index(max_m)
+print("S at 0:", Ss[idx])
 min_s = min(S)
 min_m = min(M)
 print(f"Max Shear: {max_s} lb/ft^2")
