@@ -27,7 +27,7 @@ float solve_shear_d(point_force support_reactions[], point_force pf_array[], des
 	// sum the destributed load forces
 	for (int i = 0; i < num_dloads; i++) {
 		if (x >= d_load_array[i].start && x <= d_load_array[i].stop) {
-			float dweight = weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope);
+			float dweight = weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope, 0);
 			printf("sweight: %.2f\n", dweight);
 			dload += (dweight);
 		} else if (x > d_load_array[i].stop) {
@@ -66,9 +66,9 @@ float solve_moment_d(point_force support_reactions[], point_force pf_array[], de
 	// sum the moment of the destributed loads
 	for (int i = 0; i < num_dloads; i++) {
 		if (x >= d_load_array[i].start && x <= d_load_array[i].stop) {
-			float n_w = weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope) * (x - position(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2));
-			printf("diff: %f\n", (x - position(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2)));
-			printf("weight: %f\n", weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope));
+			float n_w = weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope, 0) * (x - position(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope));
+			// printf("position: %f\n", (position(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2)));
+			// printf("dweight: %f\n", weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope));
 			printf("x: %.2f\n", x);
 			// printf("ndload: %.2f\n", n_w);
 			dload += n_w;
@@ -220,7 +220,7 @@ int main() {
 	printf("Reaction A: %0.2f lbs\nReaction B: %0.2f lbs\n", support_reactions[0].magnitude, support_reactions[1].magnitude);
 
 	// make plot points
-	int points = 10;
+	int points = 9;
 	float *x = linspace(0, length, points);
 	float all_shear[points];
 	float all_M[points];
