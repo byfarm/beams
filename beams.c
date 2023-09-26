@@ -28,7 +28,8 @@ float solve_shear_d(point_force support_reactions[], point_force pf_array[], des
 	for (int i = 0; i < num_dloads; i++) {
 		if (x >= d_load_array[i].start && x <= d_load_array[i].stop) {
 			float dweight = weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope);
-			dload += dweight;
+			printf("sweight: %.2f\n", dweight);
+			dload += (dweight);
 		} else if (x > d_load_array[i].stop) {
 			dload += d_load_array[i].weightf;
 		}
@@ -219,7 +220,7 @@ int main() {
 	printf("Reaction A: %0.2f lbs\nReaction B: %0.2f lbs\n", support_reactions[0].magnitude, support_reactions[1].magnitude);
 
 	// make plot points
-	int points = 1000;
+	int points = 10;
 	float *x = linspace(0, length, points);
 	float all_shear[points];
 	float all_M[points];
