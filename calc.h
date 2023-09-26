@@ -22,7 +22,7 @@ float weight(float x1, float x2, float factor, float y1, float y2, float slope, 
 	// slope = -slope;
 
 	slope = -slope;
-	printf("slope: %0.2f\n", slope);
+	// printf("slope: %0.2f\n", slope);
 	x1 = pow((y1-y2)/slope, 1/factor);
 	x2 = x1 - x2;
 	// printf("x1: %.2f, x2: %.2f, y1: %.2f, y2: %.2f\n", x1, x2, y1, y2);
@@ -31,7 +31,6 @@ float weight(float x1, float x2, float factor, float y1, float y2, float slope, 
 	term2c = y2 * x2;
 	term1c = y2 * x1;
 	if (pos) {
-	    printf("2233");
 	    term2c *= x2;
 	    term1c *= x1;
 	}
@@ -70,18 +69,24 @@ float position(float x1, float x2, float factor, float y1, float y2, float slope
     // printf("fraction: %.2f\n", fraction);
     float position;
     
-    printf("x1: %.2f, x2: %.2f, y1: %.2f, y2: %.2f\n", x1, x2, y1, y2);
     if (y1 < y2) {
 	float a2 = (x2 - x1) * y1;
 	fraction = x2 - fraction;
 	position = (fraction * a1 + base_frac * a2) / (a1 + a2);
     } else if (y1 > y2) {
-	float a2 = (x2 - x1) * y2;
-	fraction = x1 + fraction;
+	a1 = weight(x1, x2, factor, y1-y2, 0, slope, 1);
+	x1 = pow((y1-y2)/-slope, 1/factor);
+	x2 = x1 - x2;
+	float low_y = -slope * pow(x2, factor) + y2;
+	printf("lowy %f\n", low_y);
+	float a2 = (x1 - x2) * low_y;
+	printf("x1: %.2f, x2: %.2f, y1: %.2f, y2: %.2f\n", x1, x2, y1, y2);
+	printf("a1: %f a2: %f\n", a1, a2);
+	// fraction = x1 + fraction;
 	position = (fraction * a1 + base_frac * a2) / (a1 + a2);
     } else {
 	position = (x1 + x2) / 2;
     }
-    printf("position %f\n", xbar);
-    return xbar;
+    printf("position %f\n", position);
+    return position;
 }
