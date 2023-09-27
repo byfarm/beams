@@ -5,11 +5,15 @@ To use, clone the repo into your machine. Must have clang compiler and python 3.
 To run, input data into the "inputs.txt" file. Instructions for the that are bellow.
 
 If it is your first time running run:
+
     $ make
+
 to run the make file to compile the program.
 
 From then on, you can simply change your input data and run:
+
     $ sh run.sh 
+
 The program will run and display important data on the command line. It will also open a png file of the shear and moment diagrams for the beam.
 
 Key: 
