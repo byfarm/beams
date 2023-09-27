@@ -17,32 +17,20 @@ From then on, you can simply change your input data and run:
 The program will run and display important data on the command line. It will also open a png file of the shear and moment diagrams for the beam.
 
 Key:
-
-R = reaction
-P = point force
-D = destributed load
-M = moment
+* R = reaction
+* P = point force
+* D = destributed load
+* M = moment
 
 Notation:
-
-; = new force
-a,b = force at a with magnitude b
-a:b,c:d = force destributed from a to b with magnitude c at a and d at b
+* ; = new force
+* a,b = force at a with magnitude b
+* a:b,c:d = force destributed from a to b with magnitude c at a and d at b
 
 Summary:
-
-1st number is location
-:# is a destributed load
-last number is magnitude
-
-Example:
-
-R;1;10
-P;5,5
-D;1:3,5 
-M;4,5;5,4
-
-
+* 1st number is location
+* :# is a destributed load
+* last number is magnitude
 
 future plans:
     have input value be put into an excel sheet
