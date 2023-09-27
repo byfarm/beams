@@ -6,10 +6,10 @@ int main() {
 	float start = 0;
 	float stop = 10;
 	float power = 1;
-	float p1 = 4;
-	float p2 = 2;
-	float slope = (p2 - p1) / (stop - start);
-	float weightf = weight(start, stop, power, p1, p2, slope);
+	float p1 = 0;
+	float p2 = 5;
+	float slope = -0.1;
+	float weightf = area(start, stop, p1, p2);
 	printf("%f\n", weightf);
 	return 0;
 }

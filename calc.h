@@ -56,6 +56,48 @@ float weight(float x1, float x2, float factor, float y1, float y2, float slope, 
     return result;
 }
 
+float area(float x1, float x2, float y1, float y2) {
+    if (y1 > y2) {
+	float tempy = y1 - y2;
+	float triA = tempy * (x2 - x1) * 0.5;
+	float baseA = y2 * (x2 - x1);
+	float totA = triA + baseA;
+	printf("x1: %f, x2: %f, y1: %f, y2: %f, baseA: %f, triA: %f, ty: %f\n", x1, x2, y1, y2, baseA, triA, tempy);
+	return totA;
+    } else if (y1 < y2){
+	float tempy = y2 - y1;
+	float triA = tempy * (x2 - x1) * 0.5;
+	float baseA = y1 * (x2 - x1);
+	float totA = triA + baseA;
+	printf("x1: %f, x2: %f, y1: %f, y2: %f, baseA: %f, triA: %f, ty: %f\n", x1, x2, y1, y2, baseA, triA, tempy);
+	return totA;
+    } else {
+	return y1 * (x2 - x1);
+    }
+}
+
+float location(float x1, float x2, float y1, float y2) {
+    if (y1 > y2) {
+	float tempy = y1 - y2;
+	float triA = tempy * (x2 - x1) * 0.5;
+	float baseA = y2 * (x2 - x1);
+	float triP = 1.0/3.0;
+	float baseP = 1.0/2.0;
+	float totA = triA + baseA;
+	return (triA * triP + baseA * baseP) / totA;
+    } else if (y1 < y2){ 
+	float tempy = y2 - y1;
+	float triA = tempy * (x2 - x1) * 0.5;
+	float baseA = y1 * (x2 - x1);
+	float triP = 2.0/3.0;
+	float baseP = 1.0/2.0;
+	float totA = triA + baseA;
+	return (triA * triP + baseA * baseP) / totA;
+    } else {
+	return (x2 - x1) / 2;
+    }
+}
+
 
 float position(float x1, float x2, float factor, float y1, float y2, float slope) {
     float fraction = (x2 - x1) / (factor + 2);
