@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "fileio.h"
+#include "calc.h"
 
 float solve_shear_d(point_force support_reactions[], point_force pf_array[], dest_load d_load_array[], float x, int num_supp, int num_pf, int num_dloads) {
 /* gives the shear at a particular point on the beam	 */
@@ -220,7 +221,7 @@ int main() {
 	
 	// get reactions at 2 supports
 	solve_reactions(support_reactions, num_supports, length, pf_array, num_point_forces, d_load_array, num_dest_loads, M_array, num_moments);
-	printf("Reaction A: %0.2f lbs\nReaction B: %0.2f lbs\n", support_reactions[0].magnitude, support_reactions[1].magnitude);
+	printf("\nReaction A: %0.2f lbs\nReaction B: %0.2f lbs\n", support_reactions[0].magnitude, support_reactions[1].magnitude);
 
 	// make plot points
 	int points = 100000;
