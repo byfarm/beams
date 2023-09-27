@@ -1,1 +1,8 @@
 need to fix the solve reaction function for when either support is not at the end of the beam
+
+for slanted destributed loads, pass in as 
+    D;start:stop,pressurexfactor
+    on pasrse, split the pressure and factor via x
+    assign dload struct a factor attribute
+    use factor attribute when solveing for reactions and shear/moments
+        ex moment = pressure * exp(x, factor)

@@ -27,9 +27,11 @@ float solve_shear_d(point_force support_reactions[], point_force pf_array[], des
 	// sum the destributed load forces
 	for (int i = 0; i < num_dloads; i++) {
 		if (x >= d_load_array[i].start && x <= d_load_array[i].stop) {
-			dload += d_load_array[i].pressure * (x - d_load_array[i].start);
-		} else if (x >= d_load_array[i].start && x > d_load_array[i].stop) {
-			dload += d_load_array[i].pressure * (d_load_array[i].stop - d_load_array[i].start);
+			float dweight = area(d_load_array[i].start, x, d_load_array[i].pressure, d_load_array[i].slope);
+			// printf("sweight: %.2f\n", dweight);
+			dload += (dweight);
+		} else if (x > d_load_array[i].stop) {
+			dload += d_load_array[i].weightf;
 		}
 	}
 
@@ -64,9 +66,15 @@ float solve_moment_d(point_force support_reactions[], point_force pf_array[], de
 	// sum the moment of the destributed loads
 	for (int i = 0; i < num_dloads; i++) {
 		if (x >= d_load_array[i].start && x <= d_load_array[i].stop) {
-			dload += d_load_array[i].pressure * (x - d_load_array[i].start) * ((x - d_load_array[i].start) / 2);
-		} else if (x >= d_load_array[i].start && x > d_load_array[i].stop) {
-			dload += d_load_array[i].pressure * (d_load_array[i].stop - d_load_array[i].start) * (x - ((d_load_array[i].stop + d_load_array[i].start)/2));;
+			float n_w = area(d_load_array[i].start, x, d_load_array[i].pressure, d_load_array[i].slope) * (x - location(d_load_array[i].start, x, d_load_array[i].pressure, d_load_array[i].slope));
+			// printf("position: %f\n", (position(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2)));
+			// printf("dweight: %f\n", weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope));
+			// printf("x: %.2f\n", x);
+			// printf("ndload: %.2f\n", n_w);
+			dload += n_w;
+		} else if (x > d_load_array[i].stop) {
+			float n_w = d_load_array[i].weightf * (x - d_load_array[i].center);
+			dload += n_w;
 		}
 	}
 
@@ -99,8 +107,8 @@ void solve_reactions(point_force support_reactions[],int num_supports, float len
 
 	// find the sum of the dloads
 	for (int i = 0; i < num_dloads; i++) {
-		Fnetm += (d_loads[i].stop - d_loads[i].start) * d_loads[i].pressure * ((d_loads[i].start + d_loads[i].stop) / 2 - loc_offset);
-		Fnet += (d_loads[i].stop - d_loads[i].start) * d_loads[i].pressure;
+		Fnetm += d_loads[i].weightf * (d_loads[i].center - loc_offset);
+		Fnet += d_loads[i].weightf;
 	}
 
 	// solve for the reactions using sum of moments then sum forces in y
@@ -212,7 +220,7 @@ int main() {
 	printf("Reaction A: %0.2f lbs\nReaction B: %0.2f lbs\n", support_reactions[0].magnitude, support_reactions[1].magnitude);
 
 	// make plot points
-	int points = 100000;
+	int points = 10000;
 	float *x = linspace(0, length, points);
 	float all_shear[points];
 	float all_M[points];
