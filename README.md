@@ -1,7 +1,7 @@
 # beams
 This program is build to graph the shear and moment diagrams for simply supported beams. Future support for non-linear destributed loads and cantilever beams is being worked on.
 
-To use, clone the repo into your machine. Must have clang compiler and python 3.10 or greater installed.
+To use, clone the repo into your machine. Must have clang compiler, bash, and python 3.10 or greater installed.
 To run, input data into the "inputs.txt" file. Instructions for the that are bellow.
 
 If it is your first time running run:
@@ -39,10 +39,9 @@ future plans:
 
 future notes:
 * for slanted destributed loads, pass in as 
-  a- D;start:stop,pressurexfactor
-  a- on pasrse, split the pressure and factor via x
-  a- assign dload struct a factor attribute
-  a- use factor attribute when solveing for reactions and shear/moments
-    ex moment = pressure * exp(x, factor)
+  * D;start:stop,pressurexfactor
+  * on pasrse, split the pressure and factor via x
+  * assign dload struct a factor attribute
+  * use factor attribute when solveing for reactions and shear/moments  ex moment = pressure * exp(x, factor)
 
 If there are any questions feel free to ask.
