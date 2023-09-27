@@ -33,16 +33,16 @@ Summary:
 * last number is magnitude
 
 future plans:
-    * have input value be put into an excel sheet
-    * make it compatible with cantelever beams / 1 support with a moment
-    * make it able to solve multiple beams at once
+* have input value be put into an excel sheet
+* make it compatible with cantelever beams / 1 support with a moment
+* make it able to solve multiple beams at once
 
 future notes:
-    * for slanted destributed loads, pass in as 
-        a- D;start:stop,pressurexfactor
-        a- on pasrse, split the pressure and factor via x
-        a- assign dload struct a factor attribute
-        a- use factor attribute when solveing for reactions and shear/moments
-            ex moment = pressure * exp(x, factor)
+* for slanted destributed loads, pass in as 
+a- D;start:stop,pressurexfactor
+a- on pasrse, split the pressure and factor via x
+a- assign dload struct a factor attribute
+a- use factor attribute when solveing for reactions and shear/moments
+    ex moment = pressure * exp(x, factor)
 
 If there are any questions feel free to ask.
