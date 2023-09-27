@@ -39,10 +39,10 @@ future plans:
 
 future notes:
 * for slanted destributed loads, pass in as 
-a- D;start:stop,pressurexfactor
-a- on pasrse, split the pressure and factor via x
-a- assign dload struct a factor attribute
-a- use factor attribute when solveing for reactions and shear/moments
+  a- D;start:stop,pressurexfactor
+  a- on pasrse, split the pressure and factor via x
+  a- assign dload struct a factor attribute
+  a- use factor attribute when solveing for reactions and shear/moments
     ex moment = pressure * exp(x, factor)
 
 If there are any questions feel free to ask.
