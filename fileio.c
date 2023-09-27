@@ -30,24 +30,28 @@ typedef struct moment {
 
 
 void write_csv(float *x, float* M, float* S, int num) {
-	// write data to the csv file to be graphed by the python script
-	FILE *file;
-	file = fopen("data.csv", "w");
-	if (file == NULL) {
-		printf("Error opening file\n");
-	}
-	fprintf(file, "%i,%i,%i", 1, 2, 3);
-	for (int i = 0; i < num; i++) {
-		fprintf(file, "%0.2f,%0.2f,%0.2f\n", *x, *S, *M);
-		if (ferror(file)) {printf("error printing to file");}
-		x++;
-		M++;
-		S++;
-	}
-	fclose(file);
+    // write data to the csv file to be graphed by the python script
+    FILE *file;
+    file = fopen("data.csv", "w");
+    if (file == NULL) {
+	    printf("Error opening file\n");
+    }
+    fprintf(file, "%s,%s,%s", "x", "S", "M");
+    
+    // write the x, S, and M line by line into the file
+    for (int i = 0; i < num; i++) {
+	    fprintf(file, "%0.2f,%0.2f,%0.2f\n", *x, *S, *M);
+	    if (ferror(file)) {printf("error printing to file");}
+	    x++;
+	    M++;
+	    S++;
+    }
+
+    fclose(file);
 }
 
 void get_nums(int array[]) {
+    // gets the number of each type of force to preallocate an array for each
     FILE *file;
     char line[MAX_LINE_LENGTH];
 
@@ -56,7 +60,9 @@ void get_nums(int array[]) {
         printf("Error opening input file\n");
     }
 
+    // read through the file line by line
     while (fgets(line, MAX_LINE_LENGTH, file)) {
+	// first get number of supports, then everything else
 	if (line[0] == 'R') {
 	    char *token;
 	    token = strtok(line, ";");
@@ -72,6 +78,7 @@ void get_nums(int array[]) {
 	} else if (line[0] == 'M') {
 	    array[3] += 1;
 	} else if (line[0] == 'L') {
+	    // skip over length def
 	} else {
 	    printf("invalid input\n");
 	}
@@ -94,10 +101,12 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float
         printf("Error opening input file\n");
     }
 
+    // read file line by line, printing out each one
     while (fgets(line, MAX_LINE_LENGTH, file)) {
         printf("%s", line);
 
 	char *data;
+	// take out the first two characters of the data
 	data = line + 2;
 
 	if (line[0] == 'P') {
@@ -171,26 +180,18 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float
 	    di++;
 
 	} else if (line[0] == 'M') {
-
-	    char location[MAX_LINE_LENGTH];
-	    char magnitude[MAX_LINE_LENGTH];
-	    int i = 0;
-	    while (data[i] != ',') {
-		location[i] = data[i];
-		i++;
-	    }
-	    i++;
-	    int idx = i;
-	    while (data[i] != '\n') {
-		magnitude[i - idx] = data[i];
-		i++;
-	    }
 	    moment mom; // = (moment*) malloc(sizeof(moment));
-	    mom.location = atof(location);
-	    mom.magnitude = atof(magnitude);
+	    char *token;
+	    token = strtok(data, ",");
+	    mom.location = atof(token);
+	    while (token != NULL) {
+		mom.magnitude = atof(token);
+		token = strtok(NULL, ",");
+	    }
+
+	    // printf("pf mag %f\n", pf->magnitude);
+	    // printf("pf loc %f\n", pf->location);
 	    M[mi] = mom;
-	    // printf("moment mag %f\n", mom->magnitude);
-	    // printf("moment loc %f\n", mom->location);
 	    mi++;
 	    // free(mom);
 
