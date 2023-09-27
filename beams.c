@@ -4,6 +4,7 @@
 #include "fileio.h"
 
 float solve_shear_d(point_force support_reactions[], point_force pf_array[], dest_load d_load_array[], float x, int num_supp, int num_pf, int num_dloads) {
+/* gives the shear at a particular point on the beam	 */
 	// solves the shear diagram
 	// init variables
 	float dload = 0;
@@ -42,6 +43,7 @@ float solve_shear_d(point_force support_reactions[], point_force pf_array[], des
 
 
 float solve_moment_d(point_force support_reactions[], point_force pf_array[], dest_load d_load_array[], moment M_array[], float x, int num_supp, int num_pf, int num_dloads, int num_moments) {
+/* gives the moment at a particular point on the beam	 */
 	// solves the moment diagram
 	// init variables
 	float dload = 0;
@@ -92,6 +94,7 @@ float solve_moment_d(point_force support_reactions[], point_force pf_array[], de
 
 
 void solve_reactions(point_force support_reactions[],int num_supports, float length, point_force force_array[], int num_forces, dest_load d_loads[], int num_dloads, moment moments[], int num_moments) {
+/* solves the reactions using sum of moments then sum of forces */
 	// solves for the reactions
 	// sum the point forces
 	float Fnetm = 0;
@@ -220,7 +223,7 @@ int main() {
 	printf("Reaction A: %0.2f lbs\nReaction B: %0.2f lbs\n", support_reactions[0].magnitude, support_reactions[1].magnitude);
 
 	// make plot points
-	int points = 10000;
+	int points = 100000;
 	float *x = linspace(0, length, points);
 	float all_shear[points];
 	float all_M[points];
