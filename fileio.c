@@ -2,32 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "calc.h"
+#include "fileio.h"
 
 #define MAX_LINE_LENGTH 64
-
-typedef struct point_force {
-	float location;
-	float magnitude;
-} point_force;
-
-typedef struct dest_load {
-	float start;
-	float stop;
-    // this is the pressure at start
-	float pressure;
-	int factor;
-    // this is the pressure at stop
-	float pressure2;
-	float center;
-	float weightf;
-	float slope;
-} dest_load;
-
-typedef struct moment {
-	float location;
-	float magnitude;
-} moment;
-
 
 void write_csv(float *x, float* M, float* S, int num) {
     // write data to the csv file to be graphed by the python script
@@ -63,14 +40,8 @@ void get_nums(int array[]) {
     // read through the file line by line
     while (fgets(line, MAX_LINE_LENGTH, file)) {
 	// first get number of supports, then everything else
-	if (line[0] == 'R') {
-	    char *token;
-	    token = strtok(line, ";");
-	    while (token != NULL) {
-		array[0] += 1;
-		token = strtok(NULL, ";");
-	    }
-	    array[0]--;
+	if (line[0] =='R') {
+	    array[0]++;
 	} else if (line[0] == 'P') {
 	    array[1] += 1;
 	} else if (line[0] == 'D') {
@@ -87,7 +58,7 @@ void get_nums(int array[]) {
     // printf("Lengths read\n");
 }
 
-void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float *length) {
+void read_txt(reaction R[], point_force P[], dest_load D[], moment M[], float *length) {
 
     FILE *file;
     char line[MAX_LINE_LENGTH];
@@ -129,19 +100,21 @@ void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float
 	} else if (line[0] == 'R') {
 
 	    char *token;
-	    point_force pf; // = (point_force*) malloc(sizeof(point_force));
-	    point_force pf2;//  = (point_force*) malloc(sizeof(point_force));
-	    token = strtok(data, ";");
-	    pf.location = atof(token);
-	    while (token != NULL) {
-		pf2.location = atof(token);
-		token = strtok(NULL, ";");
+	    reaction reac; // = (point_force*) malloc(sizeof(point_force));
+	    token = strtok(data, ",");
+	    reac.location = atof(token);
+	    token = strtok(NULL, ",");
+	    float *mag_moment = (float*)malloc(sizeof(float));
+	    if (token != NULL) {
+		mag_moment = NULL;
+		reac.moment = mag_moment;
+	    } else {
+		*mag_moment = 0.0;
+		reac.moment = mag_moment;
 	    }
 	    // printf("reaction loc %f\n", pf->location);
 	    // printf("reaction2 loc %f\n", pf2->location);
-	    R[ri] = pf;
-	    ri++;
-	    R[ri] = pf2;
+	    R[ri] = reac;
 	    ri++;
 	    // free(pf), free(pf2);
 

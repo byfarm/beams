@@ -24,8 +24,14 @@ typedef struct moment {
 	float magnitude;
 } moment;
 
+typedef struct reaction {
+	float location;
+	float magnitude;
+	float *moment;
+} reaction;
+
 void write_csv(float *x, float* M, float* S, int num);
 void get_nums(int array[]);
-void read_txt(point_force R[], point_force P[], dest_load D[], moment M[], float *length);
+void read_txt(reaction R[], point_force P[], dest_load D[], moment M[], float *length);
 
 #endif // FILEIO_H
