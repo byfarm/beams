@@ -27,7 +27,7 @@ typedef struct moment {
 typedef struct reaction {
 	float location;
 	float magnitude;
-	float *moment;
+	float moment;
 } reaction;
 
 void write_csv(float *x, float* M, float* S, int num);

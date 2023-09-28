@@ -56,7 +56,7 @@ float solve_moment_d(reaction support_reactions[], point_force pf_array[], dest_
 	for (int i = 0; i < num_supp; i++) {
 		if (x >= support_reactions[i].location) {
 			supports += support_reactions[i].magnitude * (x - support_reactions[i].location);
-			supports += *support_reactions[i].moment;
+			supports += support_reactions[i].moment;
 		}
 	}
 
@@ -113,7 +113,7 @@ void solve_cantilever(reaction fixed_end, float length, point_force force_array[
 		Fnet += d_loads[i].weightf;
 	}
 
-	*fixed_end.moment = Fnetm;
+	fixed_end.moment = Fnetm;
 	fixed_end.magnitude = Fnet;
 }
 
@@ -176,11 +176,9 @@ int main() {
 	moment M_array[num_moments];
 	read_txt(support_reactions, pf_array, d_load_array, M_array, &length);
 	if (num_supports < 2) {
-		if (support_reactions[0].moment == NULL) {
 			// solve the reaction
 			solve_cantilever(support_reactions[0], length, pf_array, num_point_forces, d_load_array, num_dest_loads, M_array, num_moments);
-			printf("\nReaction Force: %0.2f lbs\nReaction Moment: %0.2f lb-ft\n", support_reactions[0].magnitude, *support_reactions[0].moment);
-		}  
+			printf("\nReaction Force: %0.2f lbs\nReaction Moment: %0.2f lb-ft\n", support_reactions[0].magnitude, support_reactions[0].moment);
 	} else {
 		// get reactions at 2 supports
 		solve_reactions(support_reactions, num_supports, length, pf_array, num_point_forces, d_load_array, num_dest_loads, M_array, num_moments);
