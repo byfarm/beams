@@ -99,10 +99,10 @@ void read_txt(reaction R[], point_force P[], dest_load D[], moment M[], float *l
 
 	} else if (line[0] == 'R') {
 
-	    char *token;
+	    // char *token;
 	    reaction reac; // = (point_force*) malloc(sizeof(point_force));
-	    token = strtok(data, ",");
-	    reac.location = atof(token);
+	    // token = strtok(data, ",");
+	    reac.location = atof(data);
 	    reac.moment = 0.0;
 	    // printf("reaction loc %f\n", pf->location);
 	    // printf("reaction2 loc %f\n", pf2->location);
@@ -169,7 +169,7 @@ void read_txt(reaction R[], point_force P[], dest_load D[], moment M[], float *l
 	    printf("Invalid Input\n");
 	}
     }
-    printf("closing file\n");
+    // printf("closing file\n");
     fclose(file);
-    printf("Data loaded\n");
+    // printf("Data loaded\n");
 };

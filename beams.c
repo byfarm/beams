@@ -94,15 +94,16 @@ float solve_moment_d(reaction support_reactions[], point_force pf_array[], dest_
 	return -moment;
 }
 
-void solve_cantilever(reaction fixed_end, float length, point_force force_array[], int num_forces, dest_load d_loads[], int num_dloads, moment moments[], int num_moments) {
+void solve_cantilever(reaction *fixed_end, float length, point_force force_array[], int num_forces, dest_load d_loads[], int num_dloads, moment moments[], int num_moments) {
 	// sum the point forces
 	float Fnetm = 0;
 	float Fnet = 0;
 
 	// must do this because when solving for reactions need to cancel out 1 unknown
-	float loc_offset = fixed_end.location;
+	float loc_offset = fixed_end->location;
 
 	for (int i = 0; i < num_forces; i++) {
+		// printf("force_array: %f\n", force_array[i].location);
 		Fnetm += (force_array[i].location - loc_offset) * force_array[i].magnitude;
 		Fnet += force_array[i].magnitude;
 	}
@@ -113,8 +114,9 @@ void solve_cantilever(reaction fixed_end, float length, point_force force_array[
 		Fnet += d_loads[i].weightf;
 	}
 
-	fixed_end.moment = Fnetm;
-	fixed_end.magnitude = Fnet;
+	// printf("fnet: %f\n", Fnet);
+	fixed_end->moment = -Fnetm;
+	fixed_end->magnitude = Fnet;
 }
 
 void solve_reactions(reaction support_reactions[],int num_supports, float length, point_force force_array[], int num_forces, dest_load d_loads[], int num_dloads, moment moments[], int num_moments) {
@@ -176,9 +178,12 @@ int main() {
 	moment M_array[num_moments];
 	read_txt(support_reactions, pf_array, d_load_array, M_array, &length);
 	if (num_supports < 2) {
+		if (num_supports < 1) {
+		} else {
 			// solve the reaction
-			solve_cantilever(support_reactions[0], length, pf_array, num_point_forces, d_load_array, num_dest_loads, M_array, num_moments);
+			solve_cantilever(&support_reactions[0], length, pf_array, num_point_forces, d_load_array, num_dest_loads, M_array, num_moments);
 			printf("\nReaction Force: %0.2f lbs\nReaction Moment: %0.2f lb-ft\n", support_reactions[0].magnitude, support_reactions[0].moment);
+		}
 	} else {
 		// get reactions at 2 supports
 		solve_reactions(support_reactions, num_supports, length, pf_array, num_point_forces, d_load_array, num_dest_loads, M_array, num_moments);
