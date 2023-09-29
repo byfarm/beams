@@ -101,17 +101,24 @@ void solve_cantilever(reaction *fixed_end, float length, point_force force_array
 
 	// must do this because when solving for reactions need to cancel out 1 unknown
 	float loc_offset = fixed_end->location;
+	// printf("locOff: %f\n", loc_offset);
 
 	for (int i = 0; i < num_forces; i++) {
 		// printf("force_array: %f\n", force_array[i].location);
 		Fnetm += (force_array[i].location - loc_offset) * force_array[i].magnitude;
+		// printf("force: %f\n", force_array[i].magnitude);
 		Fnet += force_array[i].magnitude;
 	}
 
 	// find the sum of the dloads
 	for (int i = 0; i < num_dloads; i++) {
 		Fnetm += d_loads[i].weightf * (d_loads[i].center - loc_offset);
+		// printf("dlad_cnet: %f\n", d_loads[i].center);
 		Fnet += d_loads[i].weightf;
+	}
+
+	for (int i = 0; i < num_moments; i++) {
+		Fnetm += -moments[i].magnitude;
 	}
 
 	// printf("fnet: %f\n", Fnet);
@@ -175,14 +182,15 @@ int main() {
 	reaction support_reactions[num_supports];
 	point_force pf_array[num_point_forces];
 	dest_load d_load_array[num_dest_loads];
+	// note that moments are defined ccw as possitive
 	moment M_array[num_moments];
 	read_txt(support_reactions, pf_array, d_load_array, M_array, &length);
 	if (num_supports < 2) {
 		if (num_supports < 1) {
 		} else {
-			// solve the reaction
+			// solve the cantilever reaction
 			solve_cantilever(&support_reactions[0], length, pf_array, num_point_forces, d_load_array, num_dest_loads, M_array, num_moments);
-			printf("\nReaction Force: %0.2f lbs\nReaction Moment: %0.2f lb-ft\n", support_reactions[0].magnitude, support_reactions[0].moment);
+			printf("\nReaction Force: %0.2f lbs\nReaction Moment: %0.2f lb-ft\n", support_reactions[0].magnitude, -support_reactions[0].moment);
 		}
 	} else {
 		// get reactions at 2 supports
