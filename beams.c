@@ -272,6 +272,7 @@ int main() {
 	float all_shear[points];
 	float all_M[points];
 	float angles[points];
+	float position[points];
 	
 	// plug into equations
 	float *cx = x;
@@ -280,13 +281,16 @@ int main() {
 		all_M[i] = solve_moment_d(support_reactions, pf_array, d_load_array, M_array, *x, num_supports, num_point_forces, num_dest_loads, num_moments);
 		// printf("%.2f %.2f %.2f\n", *x, all_shear[i], all_M[i]);
 		angles[i] = tot_area(cx, i, all_M);
+		if (i > 1) {
+			position[i] = tot_area(cx, i, angles);
+		}
 		x++;
 	}
 	// have to reset x pointer back to begining
 	for (int i = 0; i < points; i++) {
 		x--;
 	}
-	write_csv(x, all_M, all_shear, angles, points);
+	write_csv(x, all_M, all_shear, angles, position, points);
 
 	return 0;
 }
