@@ -3,6 +3,7 @@
 #include <math.h>
 #include "fileio.h"
 #include "calc.h"
+#include "integral.h"
 
 float solve_shear_d(reaction support_reactions[], point_force pf_array[], dest_load d_load_array[], float x, int num_supp, int num_pf, int num_dloads) {
 /* gives the shear at a particular point on the beam	 */
@@ -270,19 +271,22 @@ int main() {
 	float *x = linspace(0, length, points);
 	float all_shear[points];
 	float all_M[points];
+	float angles[points];
 	
 	// plug into equations
+	float *cx = x;
 	for (int i = 0; i < points; i++) {
 		all_shear[i] = solve_shear_d(support_reactions, pf_array, d_load_array, *x, num_supports, num_point_forces, num_dest_loads);
 		all_M[i] = solve_moment_d(support_reactions, pf_array, d_load_array, M_array, *x, num_supports, num_point_forces, num_dest_loads, num_moments);
 		// printf("%.2f %.2f %.2f\n", *x, all_shear[i], all_M[i]);
+		angles[i] = tot_area(cx, i, all_M);
 		x++;
 	}
 	// have to reset x pointer back to begining
 	for (int i = 0; i < points; i++) {
 		x--;
 	}
-	write_csv(x, all_M, all_shear, points);
+	write_csv(x, all_M, all_shear, angles, points);
 
 	return 0;
 }

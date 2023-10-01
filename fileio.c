@@ -6,23 +6,24 @@
 
 #define MAX_LINE_LENGTH 64
 
-void write_csv(float *x, float* M, float* S, int num) {
+void write_csv(float *x, float* M, float* S, float* T, int num) {
     // write data to the csv file to be graphed by the python script
     FILE *file;
     file = fopen("data.csv", "w");
     if (file == NULL) {
 	    printf("Error opening file\n");
     }
-    fprintf(file, "%s,%s,%s", "x", "S", "M");
+    fprintf(file, "%s,%s,%s,%s", "x", "S", "M", "T");
     
     // write the x, S, and M line by line into the file
     for (int i = 0; i < num; i++) {
-	    fprintf(file, "%0.2f,%0.2f,%0.2f\n", *x, *S, *M);
+	    fprintf(file, "%0.2f,%0.2f,%0.2f,%0.2f\n", *x, *S, *M, *T);
 	    if (ferror(file)) {printf("error printing to file");}
 	    x++;
 	    M++;
 	    S++;
-    }
+	    T++;
+    }  
 
     fclose(file);
 }

@@ -30,7 +30,7 @@ typedef struct reaction {
 	float moment;
 } reaction;
 
-void write_csv(float *x, float* M, float* S, int num);
+void write_csv(float *x, float* M, float* S, float* T, int num);
 void get_nums(int array[]);
 void read_txt(reaction R[], point_force P[], dest_load D[], moment M[], float *length);
 
