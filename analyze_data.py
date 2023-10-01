@@ -17,7 +17,7 @@ def main():
     print(f"Max Moment: {max_m} lb-ft")
     print(f"Min Moment: {min_m} lb-ft")
 
-    interested_points = [6]
+    interested_points = []
 
     for point in interested_points:
         idx = x.index(point)

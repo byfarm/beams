@@ -267,7 +267,7 @@ int main() {
 	
 
 	// make plot points
-	int points = 100000;
+	int points = 10000;
 	float *x = linspace(0, length, points);
 	float all_shear[points];
 	float all_M[points];

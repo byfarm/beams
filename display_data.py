@@ -7,14 +7,17 @@ def main():
     x = list(data.iloc[:, 0])
     S = (data.iloc[:, 1])
     M = (data.iloc[:, 2])
+    T = (data.iloc[:, 3])
 
     max_s = max(abs(S)) * 1.1
     max_m = max(abs(M)) * 1.1
+    max_t = max(abs(T)) * 1.1
 
-    fig, plot = plt.subplots(2, layout="constrained", figsize=(10, 9.5))
+    fig, plot = plt.subplots(3, layout="constrained", figsize=(10, 9.5))
 
     plot[0].plot(x, S)
     plot[1].plot(x, M)
+    plot[2].plot(x, T)
 
     plot[0].set_title("Shear")
     plot[0].set_xlabel("x (ft)")
@@ -31,6 +34,14 @@ def main():
     plot[1].set_xlim(0, x[-1])
     plot[1].set_ylim(-max_m, max_m)
     plot[1].axhline(0, color='black', linewidth=0.5)
+
+    plot[2].set_title("Angle")
+    plot[2].set_xlabel("x (ft)")
+    plot[2].set_ylabel("Angle")
+    plot[2].grid(True)
+    plot[2].set_xlim(0, x[-1])
+    plot[2].set_ylim(-max_t, max_t)
+    plot[2].axhline(0, color='black', linewidth=0.5)
 
     # fig.show()
     fig.savefig("plot.png")
