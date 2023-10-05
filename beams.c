@@ -5,6 +5,9 @@
 #include "calc.h"
 #include "integral.h"
 
+#define YOUNG 1700000 // psi
+#define I 200 // in^4
+
 float solve_shear_d(reaction support_reactions[], point_force pf_array[], dest_load d_load_array[], float x, int num_supp, int num_pf, int num_dloads) {
 /* gives the shear at a particular point on the beam	 */
 	// solves the shear diagram
@@ -276,12 +279,14 @@ int main() {
 	
 
 	// make plot points
-	int points = 10001;
+	int points = 20001;
 	float *x = linspace(0, length, points);
 	float all_shear[points];
 	float all_M[points];
 	float angles[points];
 	float position[points];
+	int young = 1;
+	int iyy = 1;
 	
 	// plug into equations
 	float *cx = x;
@@ -294,10 +299,11 @@ int main() {
 		}
 
 		all_M[i] = solve_moment_d(support_reactions, pf_array, d_load_array, M_array, *x, num_supports, num_point_forces, num_dest_loads, num_moments);
-		angles[i] = tot_area(cx, i, all_M);
+		angles[i] = tot_area(cx, i, all_M) / (young * iyy);
 		// printf("%.2f %.2f %.2f\n", *x, all_shear[i], all_M[i]);
 		x++;
 	}
+	// printf("yi: %i\n", young*iyy);
 
 	// printf("displacement\n");
 	float theta_ic = angles[max_m_index];
@@ -305,7 +311,7 @@ int main() {
 		// need an initial condition to offset the angle so when M = 0, 
 		x--;
 		angles[i] -= theta_ic;
-		position[i] = tot_area(cx, i, angles);
+		position[i] = tot_area(cx, i, angles) / (young * iyy);
 	}
 	for (int i = 0; i < points; i++) {
 	}

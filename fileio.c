@@ -17,7 +17,7 @@ void write_csv(float *x, float* M, float* S, float* T, float* Y, int num) {
     
     // write the x, S, and M line by line into the file
     for (int i = 0; i < num; i++) {
-	    fprintf(file, "%0.2f,%0.2f,%0.2f,%0.2f,%0.2f\n", *x, *S, *M, *T, *Y);
+	    fprintf(file, "%f,%f,%f,%f,%f\n", *x, *S, *M, *T, *Y);
 	    if (ferror(file)) {printf("error printing to file");}
 	    x++;
 	    M++;
