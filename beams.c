@@ -170,6 +170,15 @@ float* linspace(float start, float stop, int len) {
 	return array;
 }
 
+float max(float v1, float v2) {
+	float ret_val;
+	if (v1 > v2) {
+		return v1;
+	} else {
+		return v2;
+	}
+}
+
 int main() {
 
 	float length;
@@ -276,20 +285,43 @@ int main() {
 	
 	// plug into equations
 	float *cx = x;
+	int max_m_index = 0;
 	for (int i = 0; i < points; i++) {
 		all_shear[i] = solve_shear_d(support_reactions, pf_array, d_load_array, *x, num_supports, num_point_forces, num_dest_loads);
-		all_M[i] = solve_moment_d(support_reactions, pf_array, d_load_array, M_array, *x, num_supports, num_point_forces, num_dest_loads, num_moments);
-		// printf("%.2f %.2f %.2f\n", *x, all_shear[i], all_M[i]);
-		angles[i] = tot_area(cx, i, all_M);
-		if (i > 1) {
-			position[i] = tot_area(cx, i, angles);
+
+		if (fabs(all_shear[i]) < 0.001 && i < points-1) {
+			max_m_index = i;
 		}
+
+		// if (all_shear[i] < 0.0001 && all_shear[i] > -0.0001) {
+		// 	max_m_index = i;
+		// }
+
+		all_M[i] = solve_moment_d(support_reactions, pf_array, d_load_array, M_array, *x, num_supports, num_point_forces, num_dest_loads, num_moments);
+		angles[i] = tot_area(cx, i, all_M);
+		// printf("%.2f %.2f %.2f\n", *x, all_shear[i], all_M[i]);
 		x++;
 	}
-	// have to reset x pointer back to begining
+
+	// // have to reset x pointer back to begining
+	// // and find the max moment for the angle's initial condition
+	// float max_m = all_M[0];
+	// for (int i = 0; i < points; i++) {
+	// 	x--;
+	// 	if (all_M[i] > max_m) {
+	// 		max_m_index = i;
+	// 	}
+	// 	max_m = max(all_M[i], max_m);
+	// }
+
+	printf("max idx %d\n", max_m_index);
+	float theta_ic = angles[max_m_index];
 	for (int i = 0; i < points; i++) {
+		// need an initial condition to offset the angle so when M = 0, 
 		x--;
+		angles[i] -= theta_ic;
 	}
+
 	write_csv(x, all_M, all_shear, angles, position, points);
 
 	return 0;
