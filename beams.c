@@ -276,7 +276,7 @@ int main() {
 	
 
 	// make plot points
-	int points = 10000;
+	int points = 10001;
 	float *x = linspace(0, length, points);
 	float all_shear[points];
 	float all_M[points];
@@ -293,34 +293,23 @@ int main() {
 			max_m_index = i;
 		}
 
-		// if (all_shear[i] < 0.0001 && all_shear[i] > -0.0001) {
-		// 	max_m_index = i;
-		// }
-
 		all_M[i] = solve_moment_d(support_reactions, pf_array, d_load_array, M_array, *x, num_supports, num_point_forces, num_dest_loads, num_moments);
 		angles[i] = tot_area(cx, i, all_M);
 		// printf("%.2f %.2f %.2f\n", *x, all_shear[i], all_M[i]);
 		x++;
 	}
 
-	// // have to reset x pointer back to begining
-	// // and find the max moment for the angle's initial condition
-	// float max_m = all_M[0];
-	// for (int i = 0; i < points; i++) {
-	// 	x--;
-	// 	if (all_M[i] > max_m) {
-	// 		max_m_index = i;
-	// 	}
-	// 	max_m = max(all_M[i], max_m);
-	// }
-
-	printf("max idx %d\n", max_m_index);
+	// printf("displacement\n");
 	float theta_ic = angles[max_m_index];
 	for (int i = 0; i < points; i++) {
 		// need an initial condition to offset the angle so when M = 0, 
 		x--;
 		angles[i] -= theta_ic;
+		position[i] = tot_area(cx, i, angles);
 	}
+	for (int i = 0; i < points; i++) {
+	}
+	// printf("%f\n", angles[6]);
 
 	write_csv(x, all_M, all_shear, angles, position, points);
 

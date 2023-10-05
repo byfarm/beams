@@ -3,6 +3,6 @@
 
 
 float d_area(float x1, float x2, float y1, float y2);
-float tot_area(float *x, float points, float foo[]);
+float tot_area(float *x, int points, float foo[]);
 
 #endif // INTEGRAL_H
