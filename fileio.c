@@ -6,7 +6,7 @@
 
 #define MAX_LINE_LENGTH 64
 
-void write_csv(float *x, float* M, float* S, float* T, float* Y, int num) {
+void write_csv(double *x, double* M, double* S, double* T, double* Y, int num) {
     // write data to the csv file to be graphed by the python script
     FILE *file;
     file = fopen("data.csv", "w");

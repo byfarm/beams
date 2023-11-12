@@ -7,14 +7,23 @@
 
 #define YOUNG 1700000 // psi
 #define I 200 // in^4
+#define POINTS 2001
 
-float solve_shear_d(reaction support_reactions[], point_force pf_array[], dest_load d_load_array[], float x, int num_supp, int num_pf, int num_dloads) {
+double solve_shear_d(
+	reaction support_reactions[],
+	point_force pf_array[],
+	dest_load d_load_array[],
+	double x,
+	int num_supp,
+	int num_pf,
+	int num_dloads
+) {
 /* gives the shear at a particular point on the beam	 */
 	// solves the shear diagram
 	// init variables
-	float dload = 0;
-	float pf = 0;
-	float supports = 0;
+	double dload = 0;
+	double pf = 0;
+	double supports = 0;
 
 	// sum the support forces
 	for (int i = 0; i < num_supp; i++) {
@@ -33,7 +42,7 @@ float solve_shear_d(reaction support_reactions[], point_force pf_array[], dest_l
 	// sum the destributed load forces
 	for (int i = 0; i < num_dloads; i++) {
 		if (x >= d_load_array[i].start && x <= d_load_array[i].stop) {
-			float dweight = area(d_load_array[i].start, x, d_load_array[i].pressure, d_load_array[i].slope);
+			double dweight = area(d_load_array[i].start, x, d_load_array[i].pressure, d_load_array[i].slope);
 			// printf("sweight: %.2f\n", dweight);
 			dload += (dweight);
 		} else if (x > d_load_array[i].stop) {
@@ -42,19 +51,29 @@ float solve_shear_d(reaction support_reactions[], point_force pf_array[], dest_l
 	}
 
 	// sum all
-	float shear = dload + pf - supports;
+	double shear = dload + pf - supports;
 	return -shear;
 }
 
 
-float solve_moment_d(reaction support_reactions[], point_force pf_array[], dest_load d_load_array[], moment M_array[], float x, int num_supp, int num_pf, int num_dloads, int num_moments) {
+double solve_moment_d(
+	reaction support_reactions[],
+	point_force pf_array[],
+	dest_load d_load_array[],
+	moment M_array[],
+	double x,
+	int num_supp,
+	int num_pf,
+	int num_dloads,
+	int num_moments
+) {
 /* gives the moment at a particular point on the beam	 */
 	// solves the moment diagram
 	// init variables
-	float dload = 0;
-	float pf = 0;
-	float M = 0;
-	float supports = 0;
+	double dload = 0;
+	double pf = 0;
+	double M = 0;
+	double supports = 0;
 
 	// sum the moment of the support reactions
 	for (int i = 0; i < num_supp; i++) {
@@ -74,14 +93,10 @@ float solve_moment_d(reaction support_reactions[], point_force pf_array[], dest_
 	// sum the moment of the destributed loads
 	for (int i = 0; i < num_dloads; i++) {
 		if (x >= d_load_array[i].start && x <= d_load_array[i].stop) {
-			float n_w = area(d_load_array[i].start, x, d_load_array[i].pressure, d_load_array[i].slope) * (x - location(d_load_array[i].start, x, d_load_array[i].pressure, d_load_array[i].slope));
-			// printf("position: %f\n", (position(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2)));
-			// printf("dweight: %f\n", weight(d_load_array[i].start, x, d_load_array[i].factor, d_load_array[i].pressure, d_load_array[i].pressure2, d_load_array[i].slope));
-			// printf("x: %.2f\n", x);
-			// printf("ndload: %.2f\n", n_w);
+			double n_w = area(d_load_array[i].start, x, d_load_array[i].pressure, d_load_array[i].slope) * (x - location(d_load_array[i].start, x, d_load_array[i].pressure, d_load_array[i].slope));
 			dload += n_w;
 		} else if (x > d_load_array[i].stop) {
-			float n_w = d_load_array[i].weightf * (x - d_load_array[i].center);
+			double n_w = d_load_array[i].weightf * (x - d_load_array[i].center);
 			dload += n_w;
 		}
 	}
@@ -94,17 +109,26 @@ float solve_moment_d(reaction support_reactions[], point_force pf_array[], dest_
 	}
 
 	// sum all
-	float moment = dload + pf + M - supports;
+	double moment = dload + pf + M - supports;
 	return -moment;
 }
 
-void solve_cantilever(reaction *fixed_end, float length, point_force force_array[], int num_forces, dest_load d_loads[], int num_dloads, moment moments[], int num_moments) {
+void solve_cantilever(
+	reaction *fixed_end,
+	double length,
+	point_force force_array[],
+	int num_forces,
+	dest_load d_loads[],
+	int num_dloads,
+	moment moments[],
+	int num_moments
+) {
 	// sum the point forces
-	float Fnetm = 0;
-	float Fnet = 0;
+	double Fnetm = 0;
+	double Fnet = 0;
 
 	// must do this because when solving for reactions need to cancel out 1 unknown
-	float loc_offset = fixed_end->location;
+	double loc_offset = fixed_end->location;
 	// printf("locOff: %f\n", loc_offset);
 
 	for (int i = 0; i < num_forces; i++) {
@@ -130,15 +154,25 @@ void solve_cantilever(reaction *fixed_end, float length, point_force force_array
 	fixed_end->magnitude = Fnet;
 }
 
-void solve_reactions(reaction support_reactions[],int num_supports, float length, point_force force_array[], int num_forces, dest_load d_loads[], int num_dloads, moment moments[], int num_moments) {
+void solve_reactions(
+	reaction support_reactions[],
+	int num_supports,
+	double length,
+	point_force force_array[],
+	int num_forces,
+	dest_load d_loads[],
+	int num_dloads,
+	moment moments[],
+	int num_moments
+) {
 /* solves the reactions using sum of moments then sum of forces */
 	// solves for the reactions
 	// sum the point forces
-	float Fnetm = 0;
-	float Fnet = 0;
+	double Fnetm = 0;
+	double Fnet = 0;
 
 	// must do this because when solving for reactions need to cancel out 1 unknown
-	float loc_offset = support_reactions[0].location;
+	double loc_offset = support_reactions[0].location;
 
 	for (int i = 0; i < num_forces; i++) {
 		Fnetm += (force_array[i].location - loc_offset) * force_array[i].magnitude;
@@ -152,29 +186,29 @@ void solve_reactions(reaction support_reactions[],int num_supports, float length
 	}
 
 	// solve for the reactions using sum of moments then sum forces in y
-	float reactionB = (Fnetm) / (support_reactions[1].location - support_reactions[0].location);
+	double reactionB = (Fnetm) / (support_reactions[1].location - support_reactions[0].location);
 	for (int i = 0; i < num_moments; i++) {
 		reactionB -= moments[i].magnitude / (support_reactions[1].location - support_reactions[0].location);
 	}
-	float reactionA = Fnet - reactionB;
+	double reactionA = Fnet - reactionB;
 
 	// put results into array datastructure
 	support_reactions[0].magnitude = reactionA;
 	support_reactions[1].magnitude = reactionB;
 }
 
-float* linspace(float start, float stop, int len) {
+double* linspace(double start, double stop, int len) {
 	// creates a linearly spaced array of floats
-	float *array = (float*)malloc(len * sizeof(float));
-	float step = (stop - start) / (len - 1);
+	double *array = (double*)malloc(len * sizeof(double));
+	double step = (stop - start) / (len - 1);
 	for (int i = 0; i < len; ++i) {
 		array[i] = (i * step) + start;
 	}
 	return array;
 }
 
-float max(float v1, float v2) {
-	float ret_val;
+double max(double v1, double v2) {
+	double ret_val;
 	if (v1 > v2) {
 		return v1;
 	} else {
@@ -184,7 +218,7 @@ float max(float v1, float v2) {
 
 int main() {
 
-	float length;
+	double length;
 	int indexes[4] = {0};
 	get_nums(indexes);
 	int num_supports = indexes[0]; 
@@ -202,13 +236,37 @@ int main() {
 		if (num_supports < 1) {
 		} else {
 			// solve the cantilever reaction
-			solve_cantilever(&support_reactions[0], length, pf_array, num_point_forces, d_load_array, num_dest_loads, M_array, num_moments);
-			printf("\nReaction Force: %0.2f lbs\nReaction Moment: %0.2f lb-ft\n", support_reactions[0].magnitude, -support_reactions[0].moment);
+			solve_cantilever(
+				&support_reactions[0],
+				length,
+				pf_array,
+				num_point_forces,
+				d_load_array,
+				num_dest_loads,
+				M_array,
+				num_moments
+			);
+			printf(
+				"\nReaction Force: %0.2f lbs\nReaction Moment: %0.2f lb-ft\n",
+				support_reactions[0].magnitude, -support_reactions[0].moment);
 		}
 	} else {
 		// get reactions at 2 supports
-		solve_reactions(support_reactions, num_supports, length, pf_array, num_point_forces, d_load_array, num_dest_loads, M_array, num_moments);
-		printf("\nReaction A: %0.2f lbs\nReaction B: %0.2f lbs\n", support_reactions[0].magnitude, support_reactions[1].magnitude);
+		solve_reactions(
+			support_reactions,
+			num_supports,
+			length,
+			pf_array,
+			num_point_forces,
+			d_load_array,
+			num_dest_loads,
+			M_array,
+			num_moments
+		);
+		printf(
+			"\nReaction A: %0.2f lbs\nReaction B: %0.2f lbs\n",
+			support_reactions[0].magnitude, support_reactions[1].magnitude
+		);
 	}
 	// printf("len %f\n", length);
 	// all units are in lbs/ft
@@ -279,26 +337,49 @@ int main() {
 	
 
 	// make plot points
-	int points = 20001;
-	float *x = linspace(0, length, points);
-	float all_shear[points];
-	float all_M[points];
-	float angles[points];
-	float position[points];
+	double *x = linspace(0, length, POINTS);
+	double all_shear[POINTS];
+	double all_M[POINTS];
+	double angles[POINTS];
+	double position[POINTS];
 	int young = 1;
 	int iyy = 1;
 	
 	// plug into equations
-	float *cx = x;
+	double *cx = x;
 	int max_m_index = 0;
-	for (int i = 0; i < points; i++) {
-		all_shear[i] = solve_shear_d(support_reactions, pf_array, d_load_array, *x, num_supports, num_point_forces, num_dest_loads);
+	int min_dis_index;
+	double displacement_x0 = support_reactions[0].location;
+	int displacement_0_index;
+	for (int i = 0; i < POINTS; i++) {
+		if (displacement_x0 <= *x) {
+			displacement_0_index = i;
+		}
+		all_shear[i] = solve_shear_d(
+			support_reactions,
+			pf_array,
+			d_load_array,
+			*x,
+			num_supports,
+			num_point_forces,
+			num_dest_loads
+		);
 
-		if (fabs(all_shear[i]) < 0.001 && i < points-1) {
+		if (fabs(all_shear[i]) < 0.001 && i < POINTS-1) {
 			max_m_index = i;
 		}
 
-		all_M[i] = solve_moment_d(support_reactions, pf_array, d_load_array, M_array, *x, num_supports, num_point_forces, num_dest_loads, num_moments);
+		all_M[i] = solve_moment_d(
+			support_reactions,
+			pf_array,
+			d_load_array,
+			M_array,
+			*x,
+			num_supports,
+			num_point_forces,
+			num_dest_loads,
+			num_moments
+		);
 		angles[i] = tot_area(cx, i, all_M) / (young * iyy);
 		// printf("%.2f %.2f %.2f\n", *x, all_shear[i], all_M[i]);
 		x++;
@@ -307,17 +388,20 @@ int main() {
 
 	// printf("displacement\n");
 	float theta_ic = angles[max_m_index];
-	for (int i = 0; i < points; i++) {
+	for (int i = 0; i < POINTS; i++) {
 		// need an initial condition to offset the angle so when M = 0, 
 		x--;
 		angles[i] -= theta_ic;
 		position[i] = tot_area(cx, i, angles) / (young * iyy);
 	}
-	for (int i = 0; i < points; i++) {
+
+	float y0 = position[displacement_0_index];
+	for (int i = 0; i < POINTS; i++) {
+		position[i] -= y0;
 	}
 	// printf("%f\n", angles[6]);
 
-	write_csv(x, all_M, all_shear, angles, position, points);
+	write_csv(x, all_M, all_shear, angles, position, POINTS);
 
 	return 0;
 }

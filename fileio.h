@@ -2,36 +2,36 @@
 #define FILEIO_H
 
 typedef struct point_force {
-	float location;
-	float magnitude;
+	double location;
+	double magnitude;
 } point_force;
 
 typedef struct dest_load {
-	float start;
-	float stop;
+	double start;
+	double stop;
     // this is the pressure at start
-	float pressure;
+	double pressure;
 	int factor;
     // this is the pressure at stop
-	float pressure2;
-	float center;
-	float weightf;
-	float slope;
+	double pressure2;
+	double center;
+	double weightf;
+	double slope;
 } dest_load;
 
 typedef struct moment {
-	float location;
-	float magnitude;
+	double location;
+	double magnitude;
 } moment;
 
 typedef struct reaction {
-	float location;
-	float magnitude;
-	float moment;
+	double location;
+	double magnitude;
+	double moment;
 } reaction;
 
-void write_csv(float *x, float* M, float* S, float* T, float* Y, int num);
+void write_csv(double *x, double* M, double* S, double* T, double* Y, int num);
 void get_nums(int array[]);
-void read_txt(reaction R[], point_force P[], dest_load D[], moment M[], float *length);
+void read_txt(reaction R[], point_force P[], dest_load D[], moment M[], double *length);
 
 #endif // FILEIO_H

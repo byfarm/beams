@@ -2,7 +2,7 @@
 #define INTEGRAL_H
 
 
-float d_area(float x1, float x2, float y1, float y2);
-float tot_area(float *x, int points, float foo[]);
+double d_area(double x1, double x2, double y1, double y2);
+double tot_area(double *x, int points, double foo[]);
 
 #endif // INTEGRAL_H
