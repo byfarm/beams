@@ -60,7 +60,7 @@ void get_nums(int array[]) {
     // printf("Lengths read\n");
 }
 
-void read_txt(reaction R[], point_force P[], dest_load D[], moment M[], float *length) {
+void read_txt(reaction R[], point_force P[], dest_load D[], moment M[], double *length) {
 
     FILE *file;
     char line[MAX_LINE_LENGTH];
